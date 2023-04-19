@@ -1,34 +1,35 @@
-# dec2_fly
-## cleaning
+### cleaning
 for sample in Wt-1 Wt-2 Wt-3 DecWt-1 DecWt-2 DecWt-3 P384R-1 P384R-2 P384R-3; do echo $sample; python trim_galore_pipeline.py $sample; done
 
-## mapping
-### build hisat2 index
+### mapping
+# build hisat2 index
 cd ~/db/Dmel/dmel_r6.39
 extract_splice_sites.py dmel-all-r6.39.gtf > dmel-all-r6.39.gtf.ss
 extract_exons.py dmel-all-r6.39.gtf > dmel-all-r6.39.gtf.exon
 hisat2-build -p 32 --ss dmel-all-r6.39.gtf.ss --exon dmel-all-r6.39.gtf.exon dmel-all-chromosome-r6.39.fasta dmel-all-chromosome-r6.39.fasta_hisat2_index
 
-### build salmon index
+# build salmon index
 cd ~/db/Dmel/dmel_r6.39
+- create index for cdna only
+#perl -lane 'print $1 if /gene:(\w+)/;' < Caenorhabditis_elegans.WBcel235.cdna.all.fa > Caenorhabditis_elegans.WBcel235.cdna.all.fa.WBGene.ids
 ~/software/salmon/salmon-1.6.0_linux_x86_64/bin/salmon index -p 32 \
     -t dmel-all-transcript-r6.39.fasta -i dmel-all-transcript-r6.39.fasta_hisat2_index
 
-### hisat2 alignment
+# hisat2 alignment
 hisat2_fc_pipeline.py
 
-### salmon alignment 
+# salmon alignment 
 for sample in Wt-1 Wt-2 Wt-3 DecWt-1 DecWt-2 DecWt-3 P384R-1 P384R-2 P384R-3; do echo $sample; python salmon_aln.py $sample; done
 
-## counts
-### generate count files for cdna only - need to remove ncrna from salmon alignments
+### counts
+# generate count files for cdna only - need to remove ncrna from salmon alignments
 python salmon_counts.py
 
-### hisat2 counts
+# hisat2 counts
 python hisat2_counts.py
 
-## dge
-### create sample_info.txt to be used in DeSeq2
+### dge
+# create sample_info.txt to be used in DeSeq2
 sample  Condition
 WT_1    WT
 WT_2    WT
@@ -40,5 +41,4 @@ P384R_1 P384R
 P384R_2 P384R
 P384R_3 P384R
 
-### run dge_pipeline
 python dge_pipeline.py # need to edit outdir in R script for this location

@@ -1,0 +1,10 @@
+sample  Condition
+WT_1    WT
+WT_2    WT
+WT_3    WT
+DecWT_1 DecWT
+DecWT_2 DecWT
+DecWT_3 DecWT
+P384R_1 P384R
+P384R_2 P384R
+P384R_3 P384R
