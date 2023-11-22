@@ -20,6 +20,16 @@ hisat2_fc_pipeline.py
 ### salmon alignment 
 for sample in Wt-1 Wt-2 Wt-3 DecWt-1 DecWt-2 DecWt-3 P384R-1 P384R-2 P384R-3; do echo $sample; python salmon_aln.py $sample; done
 
+### minimap2 alignments for nanopore
+# minimap2 arguments from A comprehensive examination of Nanopore native RNA sequencing for characterization of complex transcriptomes (Nature 2019)
+p=.80; N=100
+threads=32
+echo run minimap2 with salmon arguments p=$p `date`
+minimap2 -t $threads -ax map-ont -p $p -N $N $transcript_fa $lib/$fq | samtools view -bh > $lib/$fq.transcript_aln.p$p.N$N.bam
+samtools sort -@ $threads -o $lib/$fq.transcript_aln.p$p.N$N.sorted.bam $lib/$fq.transcript_aln.p$p.N$N.bam # Sort bam
+samtools index -@ $threads $lib/$fq.transcript_aln.p$p.N$N.sorted.bam # Index the sorted bam
+samtools view -@ $threads -b -h -F 2308 $lib/$fq.transcript_aln.p$p.N$N.sorted.bam > $lib/$fq.transcript_aln.p$p.N$N.sorted.primary.bam # Create bam with primary alignment only
+
 ## counts
 ### generate count files for cdna only - need to remove ncrna from salmon alignments
 python salmon_counts.py
