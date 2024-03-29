@@ -1,4 +1,8 @@
 # dec2_fly
+
+## Updated code and pipeline
+Please see https://github.com/pkerrwall/rnaseq_pipeline with updated code, demo, and detailed instructions on setup
+
 ## cleaning
 `for sample in Wt-1 Wt-2 Wt-3 DecWt-1 DecWt-2 DecWt-3 P384R-1 P384R-2 P384R-3; do echo $sample; python trim_galore_pipeline.py $sample; done`  
 
